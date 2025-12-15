@@ -15,7 +15,7 @@ namespace PSDUnity.Data
     public class RuleObject : ScriptableObject
     {
         /////////////////////////////////////////////////////////////
-        [RuleType(0, "生成配制")] public bool createAtlas = true;
+        [RuleType(0, "生成配制")] public bool createAtlas = false;  // 这里修改一下 默认不创建图集 创建图集自己手动去做
         [RuleType(0, "生成配制")] public bool forceAddress = false;
         [RuleType(0, "生成配制")] public bool forceSprite = true;
         [RuleType(0, "生成配制")] public int maxSize = 4096;

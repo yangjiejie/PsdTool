@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Reflection.Emit;
+using UnityEditor;
 using UnityEngine;
 
 namespace PSDUnity.Data
@@ -64,7 +67,18 @@ namespace PSDUnity.Data
         {
             this.type = ImgType.Label;
             this.Name = name;
-            this.font = null; /*Debug.Log(font);*/
+            string unityResPath = $"Assets/Art/global/font/{font}.ttf";
+            string fontPath = (Application.dataPath + $"/Art/global/font/{font}.ttf").Replace("\\", "/");
+            if (!File.Exists(fontPath))
+            {
+                Debug.LogError("缺少字体信息" + fontPath);
+            }
+            
+            this.font = AssetDatabase.LoadAssetAtPath<Font>(unityResPath);
+            if(this.font == null)
+            {
+                Debug.LogError("加载字体失败"+unityResPath);
+            }
             this.fontSize = fontSize;
             this.text = text;
             this.color = color;

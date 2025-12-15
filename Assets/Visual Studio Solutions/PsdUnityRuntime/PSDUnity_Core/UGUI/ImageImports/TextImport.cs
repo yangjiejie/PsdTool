@@ -28,6 +28,7 @@ namespace PSDUnity.UGUI
         {
             UGUINode node = CreateRootNode(image.Name, AdjustTextRect( image.rect,image.fontSize), parent);
             UnityEngine.UI.Text myText = node.InitComponent<Text>();
+           
             PSDImporterUtility.SetPictureOrLoadColor(image, myText);
             return node;
         }

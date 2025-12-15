@@ -56,8 +56,9 @@ namespace PSDUnity.UGUI
                     var myText = (UnityEngine.UI.Text)graph;
                     myText.text = image.text;
                     myText.fontSize = image.fontSize;
+                    myText.font = image.font;
                     break;
-                case ImgType.AtlasImage:
+                case ImgType.AtlasImage:                   
                     ((UnityEngine.UI.Image)graph).sprite = image.sprite;
                     break;
                 default:

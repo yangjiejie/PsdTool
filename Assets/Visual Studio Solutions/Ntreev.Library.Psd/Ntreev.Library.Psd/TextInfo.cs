@@ -26,9 +26,14 @@ namespace Ntreev.Library.Psd
             {
                 fontSize = (int)(System.Single)styleSheetsData["FontSize"];
             }
+            
             if (styleSheetsData.Contains("Font"))
             {
                 fontName = styleSheetsData["Font"] as string;
+            }
+            if(string.IsNullOrEmpty(fontName))
+            {
+                fontName = "Arial";
             }
 
             if (styleSheetsData.Contains("FillColor"))

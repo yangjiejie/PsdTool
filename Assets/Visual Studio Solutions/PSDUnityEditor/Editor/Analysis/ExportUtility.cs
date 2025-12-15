@@ -1,4 +1,5 @@
 ﻿#define UNITY_2017
+using Assets.Editor;
 using Ntreev.Library.Psd;
 using System;
 using System.Collections.Generic;
@@ -101,10 +102,10 @@ namespace PSDUnity.Analysis
         private static void SwitchCreateTexture(List<Data.ImgNode> pictureData)
         {
             //创建atlas(非全局)
-            var atlasTextures = pictureData.FindAll(x => x.type == ImgType.AtlasImage && x.source != ImgSource.Globle);
+            var atlasTextures = pictureData.FindAll(x => x.type == ImgType.Image && x.source != ImgSource.Globle);
             SaveToAtlas(atlasTextures.ToArray(), exporter);
             //创建atlas（全局）
-            var globleAtlas = pictureData.FindAll(x => x.type == ImgType.AtlasImage && x.source == ImgSource.Globle);
+            var globleAtlas = pictureData.FindAll(x => x.type == ImgType.Image && x.source == ImgSource.Globle);
             SaveToTextures(ImgType.Image, globleAtlas.ToArray(), exporter);
             //创建Sprites
             var singleNodes = pictureData.FindAll(x => x.type == ImgType.Image);
@@ -201,47 +202,55 @@ namespace PSDUnity.Analysis
         {
             if (imgNodes.Length == 0) return;
             var textures = imgNodes.Where(x => x.texture != null).Select(x => x.texture).ToArray();
-            // The output of PackTextures returns a Rect array from which we can create our sprites
-            Rect[] rects;
-            Texture2D atlas = new Texture2D(exporter.ruleObj.maxSize, exporter.ruleObj.maxSize);
-            rects = atlas.PackTextures(textures, 2, exporter.ruleObj.maxSize);
-            List<SpriteMetaData> Sprites = new List<SpriteMetaData>();
 
-            // For each rect in the Rect Array create the sprite and assign to the SpriteMetaData
-            for (int i = 0; i < rects.Length; i++)
+            foreach (var item in textures)
             {
-                // add the name and rectangle to the dictionary
-                SpriteMetaData smd = new SpriteMetaData();
-                smd.name = textures[i].name;
-                smd.rect = new Rect(rects[i].xMin * atlas.width, rects[i].yMin * atlas.height, rects[i].width * atlas.width, rects[i].height * atlas.height);
-                smd.pivot = new Vector2(0.5f, 0.5f); // Center is default otherwise layers will be misaligned
-                smd.alignment = (int)SpriteAlignment.Center;
-                Sprites.Add(smd);
+                byte[] png = EncordToPng(item);
+                var filePath = Path.GetFullPath(exportPath + $"/{item.name}.png").ToLinuxPath();
+                PsdUtil.CreateDir(filePath);
+                File.WriteAllBytes(filePath, png);
+                AssetDatabase.Refresh();
+
             }
-            // Need to load the image first
-            byte[] buf = EncordToPng(atlas);
 
-            var atlaspath = string.Format(exportPath + "/{0}.png", exporter.name);
-            File.WriteAllBytes(Path.GetFullPath(atlaspath), buf);
-            AssetDatabase.Refresh();
-            // Get our texture that we loaded
-            TextureImporter textureImporter = AssetImporter.GetAtPath(atlaspath) as TextureImporter;
-
-            // Make sure the size is the same as our atlas then create the spritesheet
-            textureImporter.maxTextureSize = exporter.ruleObj.maxSize;
-            textureImporter.spritesheet = Sprites.ToArray();
-            textureImporter.textureType = TextureImporterType.Sprite;
-            textureImporter.spriteImportMode = SpriteImportMode.Multiple;
-            textureImporter.spritePivot = new Vector2(0.5f, 0.5f);
-
-            ChargeTextureImportRule(textureImporter, exporter.ruleObj);
-
-            AssetDatabase.ImportAsset(atlaspath, ImportAssetOptions.ForceUpdate);
-
-            foreach (var node in imgNodes)
+            foreach (var item in textures)
             {
-                UnityEngine.Object.DestroyImmediate(node.texture);
+                var assetPath = (exportPath + $"/{item.name}.png").ToLinuxPath();
+                TextureImporter textureImporter = TextureImporter.GetAtPath(assetPath) as TextureImporter;
+                bool needImport = false;
+                textureImporter.textureType = TextureImporterType.Sprite;
+                var androidSetting = textureImporter.GetPlatformTextureSettings("android");
+                if (!androidSetting.overridden)
+                {
+                    androidSetting.overridden = true;
+                    needImport = true;
+                }
+                
+
+
+                if (androidSetting.format != TextureImporterFormat.ASTC_6x6)
+                {
+                    androidSetting.format = TextureImporterFormat.ASTC_6x6;
+                    androidSetting.overridden = true;
+                    needImport = true;
+                }
+
+                if (needImport)
+                {
+                    textureImporter.SetPlatformTextureSettings(androidSetting);                                     
+                }
+
             }
+
+                
+
+
+            AssetDatabase.ImportAsset(exportPath, ImportAssetOptions.ForceUpdate);
+
+            //foreach (var node in imgNodes)
+            //{
+            //    UnityEngine.Object.DestroyImmediate(node.texture);
+            //}
         }
 
         /// <summary>
@@ -254,6 +263,11 @@ namespace PSDUnity.Analysis
         {
             foreach (var node in singleNodes)
             {
+                if (node.texture == null)
+                {
+                    Debug.LogError("node.texture == null");
+                    continue;
+                }
                 byte[] buf = EncordToPng(node.texture);
 
                 var rootPath = exportPath;
