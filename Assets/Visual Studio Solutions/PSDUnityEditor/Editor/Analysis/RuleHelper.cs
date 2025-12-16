@@ -39,14 +39,16 @@ namespace PSDUnity
             return null;
         }
 
-        public static void LoadImageImports(RuleObject target,UnityAction onComplete)
+        public static void LoadImageImports(RuleObject target,UnityAction onComplete, string assetPath = "")
         {
             var types = new List<Type>() {
                 typeof(UGUI.TextImport),
                 typeof(UGUI.ImageRawImageImport),
             };
-
-            var assetPath = AssetDatabase.GetAssetPath(target);
+            if(string.IsNullOrEmpty(assetPath))
+            {
+                assetPath = AssetDatabase.GetAssetPath(target);
+            }
             if(string.IsNullOrEmpty(assetPath))
             {
                 Debug.Log("Dely LoadImageImports:" + target);
@@ -210,10 +212,10 @@ namespace PSDUnity
             }
             return null;
         }
-        public static RuleObject CreateRuleObject()
+        public static RuleObject CreateRuleObject(string name = "new rule.asset")
         {
             var ruleObj = ScriptableObject.CreateInstance<RuleObject>();
-            ProjectWindowUtil.CreateAsset(ruleObj, "new rule.asset");
+            ProjectWindowUtil.CreateAsset(ruleObj, name);
             return ruleObj;
         }
         public static void SetDefultRuleObject(RuleObject rule)

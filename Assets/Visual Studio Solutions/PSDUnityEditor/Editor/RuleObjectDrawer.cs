@@ -40,7 +40,7 @@ namespace PSDUnity.Data
                 RuleHelper.LoadImageImports(target as RuleObject, () => {
                     RuleHelper.LoadLayerImports(target as RuleObject);
                 });
-                InitPropertys();
+                InitPropertys(serializedObject);
                 ChargeCurrent();
             }
         }
@@ -247,7 +247,7 @@ namespace PSDUnity.Data
 
         }
 
-        private void InitPropertys()
+        private void InitPropertys(SerializedObject serializedObject)
         {
             scriptProp = serializedObject.FindProperty("m_Script");
             propDic = new Dictionary<int, Dictionary<string, List<SerializedProperty>>>();

@@ -37,11 +37,13 @@ namespace PSDUnity.Analysis
         public static Data.Exporter exporter { get; set; }
         private static Vector2 rootSize { get; set; }
 
-        private static string exportPath
+        private static string _exportPath;
+
+        public static string exportPath
         {
             get
             {
-                if (exporter != null)
+                if (exporter != null && string.IsNullOrEmpty(_exportPath))
                 {
                     var assetFolder = AssetDatabase.GetAssetPath(exporter).Replace("/" + exporter.name + ".asset", "");
                     var _exportPath = System.IO.Path.Combine(assetFolder, exporter.ruleObj.subFolder);
@@ -51,7 +53,11 @@ namespace PSDUnity.Analysis
                     }
                     return _exportPath;
                 }
-                return null;
+                return _exportPath;
+            }
+            set
+            {
+                _exportPath = value;
             }
         }
         public static void InitPsdExportEnvrioment(Data.Exporter obj, Vector2 rootSize0)

@@ -25,7 +25,7 @@ namespace Assets.Editor
 
         
 
-        [UnityEditor.MenuItem("Assets/psd转prefab")]
+        [UnityEditor.MenuItem("Assets/psd转prefab",priority = 100000)]
         public async static UniTask PsdToPrefab()
         {
             var path = AssetDatabase.GetAssetPath(Selection.objects[0]);
