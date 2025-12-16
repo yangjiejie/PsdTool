@@ -1,5 +1,4 @@
-﻿
-using Assets.Editor;
+﻿using Assets.Editor;
 using Ntreev.Library.Psd;
 using System;
 using System.Collections.Generic;
@@ -13,18 +12,21 @@ using PSDUnity.UGUI;
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using log4net.Core;
-using UnityEditor.UI;
 
 namespace Assets.Editor
 {
     public static class PsdUtil
     {
-      
 
-   
+
+
+
+
+
+        
 
         [UnityEditor.MenuItem("Assets/psd转prefab")]
-        public  async static  UniTask  PsdToPrefab()
+        public async static UniTask PsdToPrefab()
         {
             var path = AssetDatabase.GetAssetPath(Selection.objects[0]);
             if (!path.EndsWith(".psd"))
@@ -54,7 +56,7 @@ namespace Assets.Editor
             exporter._exportPath = path.ToFolderParent();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Selection.activeObject = exporter.ruleObj;
+
 
 
             RuleHelper.LoadImageImports(exporter.ruleObj, () => {
@@ -63,21 +65,16 @@ namespace Assets.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Selection.activeObject = null;
 
             var time = DateTime.Now;
 
-            
-            await UniTask.WaitUntil(() =>
+            //这里目前不清楚是什么机制导致 ，点击psd2ugui之后需要再次点击unity使unity在此获得焦点才会触发后续逻辑
+            // 可能是unity触发了编译 导致update事件丢了
+            await  UniTask.WaitUntil(() =>
             {
-                return exporter.ruleObj.imageImports.Count > 0;
+                return exporter.ruleObj.layerImports.Count > 0;
             });
-
             Debug.Log("await了多久" + (DateTime.Now - time).TotalMilliseconds);
-
-
-            // 确保路径唯一
-
             // 写入资源文件
             AssetDatabase.CreateAsset(exporter, AssetDatabase.GenerateUniqueAssetPath($"{folder}/{fileName}.asset"));
 
@@ -126,10 +123,7 @@ namespace Assets.Editor
 
 
 
-            if(exporter == null || exporter.ruleObj == null)
-            {
-                Debug.LogError("exporter == null");
-            }
+
 
             var canvasObj = Array.Find(Selection.objects, x => x is GameObject && (x as GameObject).GetComponent<Canvas>() != null);
             var ctrl = PSDImporterUtility.CreatePsdImportCtrlSafty(exporter.ruleObj, exporter.ruleObj.defultUISize, canvasObj == null ? UnityEngine.Object.FindObjectOfType<Canvas>() : (canvasObj as GameObject).GetComponent<Canvas>());
