@@ -3,7 +3,8 @@ thank this github project : https://github.com/zoucdr/unity-psd-ugui
 ![Uploading image.png…]()
 
 一个是一键去生成预设，一个是将中文变量改为英文变量。尽量避免繁琐的操作，原来的项目使用了图集，我这里全部去掉了，图集这个可以后续自己去搞。
-我这么做基于美术不按规范做事，水平有限，他们基本都是随意命名。所以这里还要兼容他们
+我这么做基于美术不按规范做事，水平有限，他们基本都是随意命名。所以这里还要兼容他们。
+生成的预设节点也是各种中文命名，这里也提供了右键一键设置改为变量命名，前提需要进入预设编辑器状态 
 ## about this project:
    As a programmer, sometimes I don't have to set up Userinterface first and then program, but it's not my job at all.The UI designer, like me, does not think it's his job, so there must be a program to combine the programmer with the UI designer.I got a lot of inspiration on GitHub, creating a PSDUnity that fully supports unity3d controls, which will change the process of making UI into a complete user interface. And all this will be done inside the unity3d engine
 
