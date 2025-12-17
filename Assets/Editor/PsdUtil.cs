@@ -14,6 +14,7 @@ using System.Collections;
 using log4net.Core;
 using System.Text;
 using System.Text.RegularExpressions;
+using UnityEditor.SceneManagement;
 
 namespace Assets.Editor
 {
@@ -139,24 +140,88 @@ namespace Assets.Editor
         }
 
 
+
+
+        [MenuItem("GameObject/右键菜单/节点标准化", priority = -4)]
+        static void HierarchyStandarded()
+        {
+
+            var filePath = (Application.dataPath + "/Editor/EditorExpand/translate/config.txt").ToLinuxPath();
+            var fileContent = File.ReadAllText(filePath);
+            var mapReplace = new Dictionary<string, string>();
+
+            // 匹配：{ "任意内容","任意内容" }   支持空格、制表符、换行
+            var m = Regex.Matches(fileContent, @"\{\s*""([^""]+)""\s*,\s*""([^""]+)""\s*\}");
+
+            foreach (Match item in m)
+            {
+                string key = item.Groups[1].Value;
+                string val = item.Groups[2].Value;
+                // 重复 key 直接覆盖，可按需改成累加或抛异常
+                mapReplace[key] = val;
+            }
+
+
+            var current = PrefabStageUtility.GetCurrentPrefabStage();
+            if (current == null) Debug.LogError("请在预设编辑模式进行");
+            var go = current.prefabContentsRoot;
+
+            var pattern = @"[\u4e00-\u9fff]"; // 匹配中文
+            var patternReg = new Regex(pattern);
+            HashSet<string> unknown = new HashSet<string>();
+            var all = go.GetComponentsInChildren<Transform>(true).Where((x) => x != go.transform).ToList();
+            foreach (var sub in all)
+            {
+                foreach (Match tt in Regex.Matches(sub.name, pattern))
+                {
+                    string ch = tt.Value;
+                    if (!mapReplace.ContainsKey(ch))
+                        unknown.Add(ch);
+                }
+            }
+            if (unknown.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder("以下中文未被 mapReplace 覆盖，请补充：");
+                foreach (var ch in unknown.OrderBy(x => x))
+                    sb.Append(ch);
+                Debug.LogError($"请配置{filePath}中英文映射" + sb.ToString());
+            }
+
+            int id = 0;
+            foreach (var sub in all)
+            {
+                string newName = mapReplace.Keys.Aggregate(sub.name, (current, key) => current.Replace(key, mapReplace[key]));
+                if (patternReg.IsMatch(newName))
+                {
+                    id++;
+                    newName = Regex.Replace(newName, pattern, id.ToString());
+                }
+
+                if (newName != sub.name)
+                {
+                    sub.name = newName;
+                }
+            }
+            EditorUtility.SetDirty(go);
+        }
         [MenuItem("Assets/资源名标准化", false, 100000-1)]
         public static void SetStandardVarient()
         {
-            var mapReplace = new Dictionary<string, string>
+
+            var filePath = (Application.dataPath + "/Editor/EditorExpand/translate/config.txt").ToLinuxPath();
+            var fileContent = File.ReadAllText(filePath);
+            var mapReplace = new Dictionary<string, string>();
+
+            // 匹配：{ "任意内容","任意内容" }   支持空格、制表符、换行
+            var matchList = Regex.Matches(fileContent, @"\{\s*""([^""]+)""\s*,\s*""([^""]+)""\s*\}");
+
+            foreach (Match item in matchList)
             {
-                { "图层","layer"},
-                {"组","group" },
-                { "拷贝","copy"},
-                { "色相","color"},
-                { "颜色","color"},
-                { "文本","text"},
-                { "字号","fontSize"},
-                { "水果机","fruitGame"},
-                { "游戏","game"},
-                { "矩形","rect"},
-                { "排行奖励","rankAward"},
-                 { "饱和度","saturation"},
-            };
+                string key = item.Groups[1].Value;
+                string val = item.Groups[2].Value;
+                // 重复 key 直接覆盖，可按需改成累加或抛异常
+                mapReplace[key] = val;
+            }
 
 
             var pattern = @"[\u4e00-\u9fff]"; // 匹配中文
