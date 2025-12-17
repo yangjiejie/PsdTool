@@ -63,6 +63,7 @@ namespace PSDUnity.UGUI
 
         public void Import(Data.GroupNode rootNode)
         {
+           
             InitBaseSize(uinode, canvasSize);
             DrawLayer(rootNode, uinode);//直接绘制所有层级
             BeginSetUIParents(uinode);//设置层级之前的父子关系

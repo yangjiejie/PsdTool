@@ -139,7 +139,7 @@ namespace Assets.Editor
         }
 
 
-        [MenuItem("Assets/将文件设置为英文", false, 100000-1)]
+        [MenuItem("Assets/资源名标准化", false, 100000-1)]
         public static void SetStandardVarient()
         {
             var mapReplace = new Dictionary<string, string>
@@ -159,7 +159,7 @@ namespace Assets.Editor
             };
 
 
-            var pattern = @"[\u4e00-\u9fff]";
+            var pattern = @"[\u4e00-\u9fff]"; // 匹配中文
             var patternReg = new Regex(pattern);
 
             var fileList = new List<string>();
@@ -360,6 +360,22 @@ namespace Assets.Editor
             var ctrl = PSDImporterUtility.CreatePsdImportCtrlSafty(exporter.ruleObj, exporter.ruleObj.defultUISize, canvasObj == null ? UnityEngine.Object.FindObjectOfType<Canvas>() : (canvasObj as GameObject).GetComponent<Canvas>());
             ctrl.Import(rootNode.data);
             AssetDatabase.Refresh();
+
+            var canvas = UnityEngine.Object.FindObjectOfType<Canvas>();
+            var prefabRoot = canvas.transform.Find(rootNode.displayName);
+            if(PrefabUtility.SaveAsPrefabAsset(prefabRoot.gameObject, exportPath.ToFolderParent() + $"/{rootNode.displayName}.prefab"))
+            {
+                GameObject.DestroyImmediate(prefabRoot.gameObject);
+                foreach (var delName in needDel)
+                {
+                    var delPath = Path.Combine(folder, delName);
+                    if (File.Exists(delPath))
+                    {
+                        AssetDatabase.DeleteAsset(delPath);
+                    }
+                }
+                AssetDatabase.Refresh();
+            }
             psd.Dispose();
         }
 

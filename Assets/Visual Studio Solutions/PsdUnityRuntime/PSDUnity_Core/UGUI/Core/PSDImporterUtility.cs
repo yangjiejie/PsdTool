@@ -64,16 +64,13 @@ namespace PSDUnity.UGUI
                     if (image.sprite == null)
                     {
                         var spName = exportPath + $"/{image.TextureName}.png";
-                        Debug.LogError("0-image.sprite == null,尝试加载"+ spName);
+                      
                         var sp = AssetDatabase.LoadAssetAtPath<Sprite>(spName);
                         if(sp == null)
                         {
                             Debug.LogError("加载失败" + spName);
                         }
-                        else
-                        {
-                            Debug.LogError("加载成功" + spName);
-                        }
+                       
                         ((UnityEngine.UI.Image)graph).sprite = sp;
                         
                     }
