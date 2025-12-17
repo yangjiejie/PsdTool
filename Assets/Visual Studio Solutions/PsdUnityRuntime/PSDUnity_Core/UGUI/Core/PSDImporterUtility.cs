@@ -2,11 +2,25 @@
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using UnityEditor;
 
 namespace PSDUnity.UGUI
 {
     public static class PSDImporterUtility
     {
+
+
+        private static string _exportPath;
+        public static string exportPath
+        {
+            get => _exportPath;
+
+
+            set
+            {
+                _exportPath = value;
+            }
+        }
         /// <summary>
         /// 快速创建控制器
         /// </summary>
@@ -47,9 +61,33 @@ namespace PSDUnity.UGUI
             switch (image.type)
             {
                 case ImgType.Image:
-                    ((UnityEngine.UI.Image)graph).sprite = image.sprite;
+                    if (image.sprite == null)
+                    {
+                        var spName = exportPath + $"/{image.TextureName}.png";
+                        Debug.LogError("0-image.sprite == null,尝试加载"+ spName);
+                        var sp = AssetDatabase.LoadAssetAtPath<Sprite>(spName);
+                        if(sp == null)
+                        {
+                            Debug.LogError("加载失败" + spName);
+                        }
+                        else
+                        {
+                            Debug.LogError("加载成功" + spName);
+                        }
+                        ((UnityEngine.UI.Image)graph).sprite = sp;
+                        
+                    }
+                    else
+                    {
+                        
+                        ((UnityEngine.UI.Image)graph).sprite = image.sprite;
+                    } 
                     break;
                 case ImgType.Texture:
+                    if (image.sprite == null)
+                    {
+                        Debug.LogError("2-image.sprite == null");
+                    }
                     ((UnityEngine.UI.RawImage)graph).texture = image.texture;
                     break;
                 case ImgType.Label:
@@ -58,7 +96,11 @@ namespace PSDUnity.UGUI
                     myText.fontSize = image.fontSize;
                     myText.font = image.font;
                     break;
-                case ImgType.AtlasImage:                   
+                case ImgType.AtlasImage:        
+                    if(image.sprite == null)
+                    {
+                        Debug.LogError("3-image.sprite == null");
+                    }
                     ((UnityEngine.UI.Image)graph).sprite = image.sprite;
                     break;
                 default:

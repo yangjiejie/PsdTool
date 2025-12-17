@@ -322,10 +322,10 @@ namespace PSDUnity.Analysis
             }
 
 
-            foreach (Data.ImgNode node in singleNodes)
-            {
-                UnityEngine.Object.DestroyImmediate(node.texture);
-            }
+            //foreach (Data.ImgNode node in singleNodes)
+            //{
+            //    UnityEngine.Object.DestroyImmediate(node.texture);
+            //}
 
         }
 
