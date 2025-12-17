@@ -351,19 +351,31 @@ namespace Assets.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
-
-
-
+            Canvas gameCanvas = GameObject.Find("Root")?.GetComponent<Canvas>();
 
             var canvasObj = Array.Find(Selection.objects, x => x is GameObject && (x as GameObject).GetComponent<Canvas>() != null);
-            var ctrl = PSDImporterUtility.CreatePsdImportCtrlSafty(exporter.ruleObj, exporter.ruleObj.defultUISize, canvasObj == null ? UnityEngine.Object.FindObjectOfType<Canvas>() : (canvasObj as GameObject).GetComponent<Canvas>());
+
+            gameCanvas = gameCanvas ?? (canvasObj == null ? UnityEngine.Object.FindObjectOfType<Canvas>() : (canvasObj as GameObject).GetComponent<Canvas>());
+            var ctrl = PSDImporterUtility.CreatePsdImportCtrlSafty(exporter.ruleObj, exporter.ruleObj.defultUISize, gameCanvas);
             ctrl.Import(rootNode.data);
             AssetDatabase.Refresh();
+            GameObject prefabRoot = null;
+            if (gameCanvas == null)
+            {
+                var allCanvas = Resources.FindObjectsOfTypeAll(typeof(Canvas));
+                foreach(var canvas in allCanvas)
+                {
+                    prefabRoot = (canvas as Canvas)?.transform?.Find(rootNode.displayName)?.gameObject;
+                    if(prefabRoot != null)
+                        break;
+                }
+            }
+            else
+            {
+                prefabRoot = gameCanvas?.transform?.Find(rootNode.displayName)?.gameObject;
+            }
 
-            var canvas = UnityEngine.Object.FindObjectOfType<Canvas>();
-            var prefabRoot = canvas.transform.Find(rootNode.displayName);
-            if(PrefabUtility.SaveAsPrefabAsset(prefabRoot.gameObject, exportPath.ToFolderParent() + $"/{rootNode.displayName}.prefab"))
+            if (PrefabUtility.SaveAsPrefabAsset(prefabRoot.gameObject, exportPath.ToFolderParent() + $"/{rootNode.displayName}.prefab"))
             {
                 GameObject.DestroyImmediate(prefabRoot.gameObject);
                 foreach (var delName in needDel)
