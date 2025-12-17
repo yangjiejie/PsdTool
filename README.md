@@ -1,5 +1,7 @@
 thank this github project : https://github.com/zoucdr/unity-psd-ugui 
 我做了一点改动更加适配小项目，
+![Uploading image.png…]()
+
 一个是一键去生成预设，一个是将中文变量改为英文变量。尽量避免繁琐的操作，原来的项目使用了图集，我这里全部去掉了，图集这个可以后续自己去搞
 ## about this project:
    As a programmer, sometimes I don't have to set up Userinterface first and then program, but it's not my job at all.The UI designer, like me, does not think it's his job, so there must be a program to combine the programmer with the UI designer.I got a lot of inspiration on GitHub, creating a PSDUnity that fully supports unity3d controls, which will change the process of making UI into a complete user interface. And all this will be done inside the unity3d engine
