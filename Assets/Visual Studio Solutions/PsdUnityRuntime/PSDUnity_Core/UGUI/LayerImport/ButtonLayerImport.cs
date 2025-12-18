@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace PSDUnity.UGUI
 {
@@ -30,7 +32,30 @@ namespace PSDUnity.UGUI
         }
         public override UGUINode DrawLayer(Data.GroupNode layer, UGUINode parent)
         {
-            var node = base.CreateRootNode(layer.displayName, layer.rect, parent);
+            var displayName = type_alias.Aggregate(layer.displayName,
+                (s, a) => s.Contains(a) ? s.Replace(a, _suffix) : s);
+            if(displayName == _suffix)
+            {
+                //这种不能简化了
+            }
+            else
+            {
+                displayName = displayName.Replace(_suffix, "");
+            }
+            if (displayName.EndsWith("@" + _suffix))
+            {
+
+            }
+            else if (displayName.EndsWith(_suffix))
+            {
+                var insertIndex = displayName.IndexOf(_suffix);
+                displayName = displayName.Insert(insertIndex, "@");
+            }
+            else
+            {
+                displayName += "@" + _suffix;
+            }
+            var node = base.CreateRootNode(displayName, layer.rect, parent);
             UnityEngine.UI.Button button = node.InitComponent<UnityEngine.UI.Button>();
 
             if (layer.images != null)

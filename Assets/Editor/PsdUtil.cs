@@ -408,6 +408,7 @@ namespace Assets.Editor
                     }
                     catch (Exception e)
                     {
+                        Debug.LogError(e);
                         psd.Dispose();
                     }
 

@@ -61,7 +61,7 @@ namespace PSDUnity.Data
         public string AnalysisGroupName(string name, out string groupType, out string[] areguments)
         {
             areguments = null;
-            string clampName = name;
+            string displayNodeName = name;
             string typeName = "";
 
             //如果带了@符号 
@@ -69,24 +69,35 @@ namespace PSDUnity.Data
             {
                 var index = name.IndexOf(sepraterChargroup);
                 typeName = name.Substring(index + 1, name.Length - 1 - index);
-                clampName = name.Substring(0, index);
+                displayNodeName = name.Substring(0, index);
             }
 
             groupType = PSDUnityConst.emptySuffix;
 
-            if(string.IsNullOrEmpty(typeName))
-            {
-                typeName = name;
-            }
+        
 
             var item = layerImports.Find(x =>
             {
+                if(string.IsNullOrEmpty(typeName))
+                {
+                    bool has = name.ToLower().Contains(x.Suffix.ToLower()) || x.TypeAlias.Any((y) => name.ToLower().Contains(y));
+                    if(has)
+                    {
+                        
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
                 return typeName.ToLower().Contains(x.Suffix.ToLower()) || x.TypeAlias.Any((y)=>y.Contains(typeName.ToLower()) );
             });
 
             if (item != null)
             {
                 groupType = item.Suffix;
+                
             }
 
             if (typeName.Contains(argumentChar.ToString()))
@@ -101,7 +112,12 @@ namespace PSDUnity.Data
                     }
                 }
             }
-            return clampName;
+            if (item != null && string.IsNullOrEmpty(typeName))
+            {
+                typeName = item.Suffix;
+            }
+            
+            return displayNodeName;
         }
 
         public string AnalySisImgName(string name, out ImgSource source, out ImgType type)
