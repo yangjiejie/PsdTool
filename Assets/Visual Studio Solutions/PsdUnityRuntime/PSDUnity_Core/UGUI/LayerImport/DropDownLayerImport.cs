@@ -18,6 +18,8 @@ namespace PSDUnity.UGUI
         public DropDownLayerImport()
         {
             _suffix = "DropDown";
+            type_alias?.Clear();
+            type_alias.Add("下拉框"); 
         }
 
         public override GameObject CreateTemplate()

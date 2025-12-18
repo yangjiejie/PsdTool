@@ -23,6 +23,9 @@ namespace PSDUnity.UGUI
         public ScrollViewLayerImport()
         {
             _suffix = "ScrollView";
+            type_alias?.Clear();
+            type_alias.Add("滚动视图");
+
         }
 
         public DirectionAxis GetDirectionByKey(string[] keys)

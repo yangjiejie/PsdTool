@@ -33,6 +33,7 @@ namespace PSDUnity.UGUI
             UGUINode node = CreateRootNode(image.Name, image.rect, parent);
             UnityEngine.UI.Image pic = node.InitComponent<UnityEngine.UI.Image>();
             PSDImporterUtility.SetPictureOrLoadColor(image, pic);
+            
             return node;
         }
 

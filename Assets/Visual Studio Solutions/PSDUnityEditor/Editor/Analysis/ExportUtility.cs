@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -74,7 +75,7 @@ namespace PSDUnity.Analysis
             List<GroupNodeItem> nodes = new List<GroupNodeItem>();
             foreach (PsdLayer rootLayer in rootLayers)
             {
-                if (rootLayer.IsGroup)
+                if (rootLayer.IsGroup) // ps中的文件夹 或者group  
                 {
                     var groupnode = new GroupNodeItem(GetRectFromLayer(rootLayer), idSpan++, 0);
                     groupnode.Analyzing(ExportUtility.RuleObj, rootLayer.Name);// (rootLayer,rootLayer));
@@ -223,6 +224,7 @@ namespace PSDUnity.Analysis
             {
                 var assetPath = (exportPath + $"/{item.name}.png").ToLinuxPath();
                 TextureImporter textureImporter = TextureImporter.GetAtPath(assetPath) as TextureImporter;
+                if (textureImporter == null) continue;
                 bool needImport = false;
                 textureImporter.textureType = TextureImporterType.Sprite;
                 var androidSetting = textureImporter.GetPlatformTextureSettings("android");
@@ -244,6 +246,27 @@ namespace PSDUnity.Analysis
                 if (needImport)
                 {
                     textureImporter.SetPlatformTextureSettings(androidSetting);                                     
+                }
+
+                var iosSetting = textureImporter.GetPlatformTextureSettings("ios");
+                if (!iosSetting.overridden)
+                {
+                    iosSetting.overridden = true;
+                    needImport = true;
+                }
+
+
+
+                if (iosSetting.format != TextureImporterFormat.ASTC_6x6)
+                {
+                    iosSetting.format = TextureImporterFormat.ASTC_6x6;
+                    iosSetting.overridden = true;
+                    needImport = true;
+                }
+
+                if (needImport)
+                {
+                    textureImporter.SetPlatformTextureSettings(iosSetting);
                 }
 
             }

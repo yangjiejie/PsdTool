@@ -22,6 +22,8 @@ namespace PSDUnity.UGUI
         public ToggleLayerImport()
         {
             _suffix = "Toggle";
+            type_alias?.Clear();
+            type_alias.Add("复选框");
         }
 
         public override GameObject CreateTemplate()

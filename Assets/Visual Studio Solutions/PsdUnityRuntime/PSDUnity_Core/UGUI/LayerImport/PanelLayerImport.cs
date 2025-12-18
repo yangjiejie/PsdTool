@@ -12,6 +12,9 @@ namespace PSDUnity.UGUI
         public PanelLayerImport()
         {
             _suffix = "Panel";
+            type_alias?.Clear();
+            type_alias.Add("背景");
+            type_alias.Add("页面");
         }
         public override GameObject CreateTemplate()
         {

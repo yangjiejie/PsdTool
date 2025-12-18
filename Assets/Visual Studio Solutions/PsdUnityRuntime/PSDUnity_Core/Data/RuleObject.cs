@@ -10,6 +10,7 @@ using UnityEngine.Assertions.Must;
 using UnityEngine.Assertions.Comparers;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 namespace PSDUnity.Data
 {
     public class RuleObject : ScriptableObject
@@ -63,6 +64,7 @@ namespace PSDUnity.Data
             string clampName = name;
             string typeName = "";
 
+            //如果带了@符号 
             if (name.Contains(sepraterChargroup.ToString()))
             {
                 var index = name.IndexOf(sepraterChargroup);
@@ -72,9 +74,14 @@ namespace PSDUnity.Data
 
             groupType = PSDUnityConst.emptySuffix;
 
+            if(string.IsNullOrEmpty(typeName))
+            {
+                typeName = name;
+            }
+
             var item = layerImports.Find(x =>
             {
-                return typeName.ToLower().Contains(x.Suffix.ToLower());
+                return typeName.ToLower().Contains(x.Suffix.ToLower()) || x.TypeAlias.Any((y)=>y.Contains(typeName.ToLower()) );
             });
 
             if (item != null)

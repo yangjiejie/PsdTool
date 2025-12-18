@@ -92,7 +92,8 @@ namespace PSDUnity.Analysis
             {
                 if (EditorUtility.DisplayDialog("创建新规则", "确认后将生成新的规则文件！", "确认", "取消"))
                 {
-                    exporter.ruleObj = RuleHelper.CreateRuleObject();
+                    if(exporter !=null)
+                        exporter.ruleObj = RuleHelper.CreateRuleObject();
                 }
             }
         }

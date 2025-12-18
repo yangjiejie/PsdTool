@@ -33,6 +33,8 @@ namespace PSDUnity.UGUI
         public GroupLayerImport()
         {
             _suffix = "Group";
+            type_alias?.Clear();
+            type_alias.Add("组");
         }
 
         public override void AnalysisAreguments(Data.GroupNode layer, string[] areguments)

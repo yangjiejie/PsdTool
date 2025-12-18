@@ -14,6 +14,8 @@ namespace PSDUnity.UGUI
         public InputFieldLayerImport()
         {
             _suffix = "InputField";
+            type_alias?.Clear();
+            type_alias.Add("输入框");
         }
         public override GameObject CreateTemplate()
         {

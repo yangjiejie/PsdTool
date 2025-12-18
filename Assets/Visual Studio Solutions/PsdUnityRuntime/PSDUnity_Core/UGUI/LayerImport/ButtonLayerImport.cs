@@ -25,6 +25,8 @@ namespace PSDUnity.UGUI
         public ButtonLayerImport()
         {
             _suffix = "Button";
+            type_alias?.Clear();
+            type_alias.Add("按钮");
         }
         public override UGUINode DrawLayer(Data.GroupNode layer, UGUINode parent)
         {

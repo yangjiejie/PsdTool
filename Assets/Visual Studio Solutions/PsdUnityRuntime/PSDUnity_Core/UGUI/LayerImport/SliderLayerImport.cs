@@ -47,6 +47,9 @@ namespace PSDUnity.UGUI
         public SliderLayerImport()
         {
             _suffix = "Slider";
+            type_alias?.Clear();
+            type_alias.Add("进度条");
+            type_alias.Add("滑动条");
         }
 
         public override void AnalysisAreguments(Data.GroupNode layer, string[] areguments)

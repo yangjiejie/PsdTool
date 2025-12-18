@@ -13,7 +13,12 @@ namespace PSDUnity.UGUI
         [SerializeField,CustomField("后缀")]
         protected string _suffix = PSDUnity.PSDUnityConst.emptySuffix;
 
+        [SerializeField, CustomField("别名")]
+        protected List<string> type_alias = new List<string>(2);
         public virtual string Suffix { get { return _suffix; } }
+        public virtual List<string> TypeAlias { get { return type_alias; } }
+
+        
         public virtual UGUINode DrawLayer(Data.GroupNode layer, UGUINode parent)
         {
             UGUINode node = CreateRootNode(layer.displayName, layer.rect, parent);
