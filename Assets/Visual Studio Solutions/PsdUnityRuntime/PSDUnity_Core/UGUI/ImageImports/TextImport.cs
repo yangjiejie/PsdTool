@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using PSDUnity;
+using UnityEditor.Build;
 
 namespace PSDUnity.UGUI
 {
@@ -26,7 +27,16 @@ namespace PSDUnity.UGUI
 
         public override UGUINode DrawImage(Data.ImgNode image, UGUINode parent)
         {
-            UGUINode node = CreateRootNode(image.Name, AdjustTextRect( image.rect,image.fontSize), parent);
+            UGUINode node = null; 
+            if (image.Name.ToLower().StartsWith("s_t_")) // 静态文本 不考虑导出
+            {
+                 // 无变化 
+            }
+            else if(image.Name.ToLower().StartsWith("d_t_"))
+            {
+                image.Name  +=  "@Text";
+            }
+            node = CreateRootNode(image.Name, AdjustTextRect(image.rect, image.fontSize), parent);
             UnityEngine.UI.Text myText = node.InitComponent<Text>();
            
             PSDImporterUtility.SetPictureOrLoadColor(image, myText);

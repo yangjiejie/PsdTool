@@ -18,6 +18,14 @@ namespace PSDUnity.UGUI
 
         public override UGUINode DrawImage(Data.ImgNode image, UGUINode parent)
         {
+            if(image.Name.ToLower().StartsWith("s_i_"))
+            {
+                // 
+            }
+            else if(image.Name.ToLower().StartsWith("d_i_"))
+            {
+                image.Name += "@Image";
+            }
             if (image.type == ImgType.Texture)
             {
                 return DrawRawImage(image, parent);
