@@ -63,15 +63,22 @@ namespace PSDUnity.UGUI
 
         public void Import(Data.GroupNode rootNode)
         {
-           
-            InitBaseSize(uinode, canvasSize);
-            DrawLayer(rootNode, uinode);//直接绘制所有层级
-            BeginSetUIParents(uinode);//设置层级之前的父子关系
-            BeginSetAnchers(uinode);//设置层级的锚点
-            BeginReprocess(uinode);//后处理
-            if(rule.spreadUI)
+            try
             {
-                BeginScaleWithCanvas(uinode, canvasSize);//尺寸缩放
+                InitBaseSize(uinode, canvasSize);
+                DrawLayer(rootNode, uinode);//直接绘制所有层级
+                BeginSetUIParents(uinode);//设置层级之前的父子关系
+                BeginSetAnchers(uinode);//设置层级的锚点
+                BeginReprocess(uinode);//后处理
+                if(rule.spreadUI)
+                {
+                    BeginScaleWithCanvas(uinode, canvasSize);//尺寸缩放
+                }
+
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e);
             }
         }
 
@@ -94,6 +101,7 @@ namespace PSDUnity.UGUI
 
         public UGUINode DrawLayer(Data.GroupNode layer, UGUINode parent)
         {
+            Debug.Log("绘制" + layer.displayName);
             UGUINode node = layerImporterDic[layer.suffix].DrawLayer(layer, parent);
             return node;
         }

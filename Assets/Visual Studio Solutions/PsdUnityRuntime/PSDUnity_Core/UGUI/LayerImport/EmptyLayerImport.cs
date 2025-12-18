@@ -22,18 +22,29 @@ namespace PSDUnity.UGUI
 
         public override UGUINode DrawLayer(Data.GroupNode layer, UGUINode parent)
         {
-            UGUINode node = CreateRootNode(layer.displayName, layer.rect, parent);
+            try
+            {
+                UGUINode node = CreateRootNode(layer.displayName, layer.rect, parent);
 
-            if (layer.children != null)
-                ctrl.DrawLayers(layer.children.ConvertAll(x => x as Data.GroupNode).ToArray(), node);//子节点
+                Debug.Log("绘制" + layer.displayName);
+                if (layer.children != null)
+                    ctrl.DrawLayers(layer.children.ConvertAll(x => x as Data.GroupNode).ToArray(), node);//子节点
 
-            Graphic background;
+                Graphic background;
 
-            DrawImages(layer, node, out background);
+                DrawImages(layer, node, out background);
 
-            TryDrawPanel(background, layer, node);
+                TryDrawPanel(background, layer, node);
+                return node;
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
+            
 
-            return node;
+            
 
         }
 

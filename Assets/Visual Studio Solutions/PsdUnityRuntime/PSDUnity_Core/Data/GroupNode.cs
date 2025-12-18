@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
+
 using System.Collections.Generic;
 
 
@@ -20,6 +19,8 @@ namespace PSDUnity.Data
         public float spacing;
         public Rect rect;   //利用名字解析controlType和arguments
         public List<Data.ImgNode> images = new List<Data.ImgNode>();
+
+      
         public List<object> children { get; set; }
         public Data.GroupNode parent { get; set; }
     }

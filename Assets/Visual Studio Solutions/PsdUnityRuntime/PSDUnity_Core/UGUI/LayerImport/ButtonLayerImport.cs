@@ -34,7 +34,7 @@ namespace PSDUnity.UGUI
         {
             var displayName = type_alias.Aggregate(layer.displayName,
                 (s, a) => s.Contains(a) ? s.Replace(a, _suffix) : s);
-            if(displayName == _suffix)
+            if (displayName == _suffix)
             {
                 //这种不能简化了
             }
@@ -56,6 +56,9 @@ namespace PSDUnity.UGUI
                 displayName += "@" + _suffix;
             }
             var node = base.CreateRootNode(displayName, layer.rect, parent);
+            if (layer.children != null)
+                ctrl.DrawLayers(layer.children.ConvertAll(x => x as Data.GroupNode).ToArray(), node);//子节点
+
             UnityEngine.UI.Button button = node.InitComponent<UnityEngine.UI.Button>();
 
             if (layer.images != null)
