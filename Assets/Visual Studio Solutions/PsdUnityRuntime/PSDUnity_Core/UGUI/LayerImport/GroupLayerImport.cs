@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,7 +34,7 @@ namespace PSDUnity.UGUI
         {
             _suffix = "Group";
             type_alias?.Clear();
-            type_alias.Add("组");
+           
         }
 
         public override void AnalysisAreguments(Data.GroupNode layer, string[] areguments)

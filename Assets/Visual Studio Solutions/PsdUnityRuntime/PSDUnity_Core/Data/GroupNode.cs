@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 using System.Collections.Generic;
@@ -6,6 +6,14 @@ using System.Collections.Generic;
 
 namespace PSDUnity.Data
 {
+
+    public class RenderItem
+    {
+        public Data.ImgNode imageNode;
+        public GroupNodeItem groupItem;
+        public bool isGroup = false;
+    }
+
     [System.Serializable]
     public class GroupNode
     {
@@ -22,6 +30,8 @@ namespace PSDUnity.Data
 
       
         public List<object> children { get; set; }
+
+        public List<RenderItem> renderList { get; set; } 
         public Data.GroupNode parent { get; set; }
     }
 }

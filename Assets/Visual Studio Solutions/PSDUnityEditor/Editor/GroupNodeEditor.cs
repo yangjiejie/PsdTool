@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
@@ -77,6 +77,14 @@ namespace PSDUnity
             if (!data.children.Contains(item))
             {
                 data.children.Add(item.data);
+            }
+        }
+        public void AddRenderItem(RenderItem renderItem)
+        {
+            data.renderList = data.renderList ?? new();
+            if (!data.renderList.Contains(renderItem))
+            {
+                data.renderList.Add(renderItem);
             }
         }
         public GroupNodeItem(GroupNode data)

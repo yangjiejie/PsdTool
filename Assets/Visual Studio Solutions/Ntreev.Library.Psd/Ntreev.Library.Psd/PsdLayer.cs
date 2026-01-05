@@ -1,4 +1,4 @@
-﻿#region License
+#region License
 //Ntreev Photoshop Document Parser for .Net
 //
 //Released under the MIT License.
@@ -155,7 +155,9 @@ namespace Ntreev.Library.Psd
                     return emptyChilds;
                 return this.childs;
             }
-            set { this.childs = value; }
+            set { 
+                this.childs = value; 
+            }
         }
 
         public IProperties Resources

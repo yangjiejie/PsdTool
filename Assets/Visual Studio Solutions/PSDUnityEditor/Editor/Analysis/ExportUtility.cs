@@ -1,5 +1,6 @@
-﻿#define UNITY_2017
+#define UNITY_2017
 using Assets.Editor;
+using dnlib.DotNet;
 using Ntreev.Library.Psd;
 using System;
 using System.Collections.Generic;
@@ -236,20 +237,21 @@ namespace PSDUnity.Analysis
                 
 
 
-                if (androidSetting.format != TextureImporterFormat.ASTC_6x6)
+                if (androidSetting.format != TextureImporterFormat.ASTC_8x8)
                 {
-                    androidSetting.format = TextureImporterFormat.ASTC_6x6;
+                    androidSetting.format = TextureImporterFormat.ASTC_8x8;
                     androidSetting.overridden = true;
                     needImport = true;
                 }
 
                 if (needImport)
                 {
+                    needImport = false;
                     textureImporter.SetPlatformTextureSettings(androidSetting);                                     
                 }
 
                 var iosSetting = textureImporter.GetPlatformTextureSettings("ios");
-                if (!iosSetting.overridden)
+                if (iosSetting != null && !iosSetting.overridden)
                 {
                     iosSetting.overridden = true;
                     needImport = true;
@@ -257,9 +259,9 @@ namespace PSDUnity.Analysis
 
 
 
-                if (iosSetting.format != TextureImporterFormat.ASTC_6x6)
+                if (iosSetting != null && iosSetting.format != TextureImporterFormat.ASTC_8x8)
                 {
-                    iosSetting.format = TextureImporterFormat.ASTC_6x6;
+                    iosSetting.format = TextureImporterFormat.ASTC_8x8;
                     iosSetting.overridden = true;
                     needImport = true;
                 }
@@ -543,6 +545,11 @@ namespace PSDUnity.Analysis
                         childNode.Analyzing(RuleObj, child.Name);
                         group.AddChild(childNode);
 
+                        var renderItem = new Data.RenderItem();
+                        renderItem.isGroup = true;
+                        renderItem.groupItem = childNode;
+                        group.AddRenderItem(renderItem);
+
                         if (childNode != null)
                         {
                             RetriveLayerToSwitchModle(rootSize, child, childNode, forceSprite);
@@ -556,6 +563,10 @@ namespace PSDUnity.Analysis
                         {
                             group.images.Add(imgnode);
                         }
+                        var renderItem = new Data.RenderItem();
+                        renderItem.isGroup = false; 
+                        renderItem.imageNode = imgnode;
+                        group.AddRenderItem(renderItem);
                     }
 
                 }

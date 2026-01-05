@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.Linq;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,14 +29,36 @@ namespace PSDUnity.UGUI
                 UGUINode node = CreateRootNode(layer.displayName, layer.rect, parent);
 
                 Debug.Log("绘制" + layer.displayName);
-                if (layer.children != null)
-                    ctrl.DrawLayers(layer.children.ConvertAll(x => x as Data.GroupNode).ToArray(), node);//子节点
+               
 
                 Graphic background;
 
-                DrawImages(layer, node, out background);
+                for(int i = 0; layer.renderList != null && i < layer.renderList.Count; i++)
+                {
+                    var ele = layer.renderList[i];
+                    if(ele.isGroup)
+                    {
+                        //if (layer.children != null)
+                        //    ctrl.DrawLayers(layer.children.ConvertAll(x => x as Data.GroupNode).ToArray(), node);//子节点
+                        ctrl.DrawLayer(ele.groupItem.data, node);
+                    }
+                    else
+                    {
+                        DrawImageImp(layer, ele.imageNode, node, out background);
+                    }
+                }
+                if(layer.renderList == null )
+                {
+                    if (layer.children != null)
+                        ctrl.DrawLayers(layer.children.ConvertAll(x => x as Data.GroupNode).ToArray(), node);//子节点
+                }
 
-                TryDrawPanel(background, layer, node);
+
+                //DrawImages(layer, node, out background);
+
+                // TryDrawPanel(background, layer, node);
+
+
                 return node;
             }
             catch(Exception e)
@@ -83,6 +107,34 @@ namespace PSDUnity.UGUI
                 {
                     ctrl.DrawImage(image, node);
                 }
+            }
+        }
+
+        private void DrawImageImp(Data.GroupNode layer, Data.ImgNode imgNode,  UGUINode node,out Graphic background)
+        {
+            Data.ImgNode image = imgNode;
+            background = null;
+            if (MatchAddress(image.Name, backgroundAddress))
+            {
+                if (image.type == ImgType.Texture)
+                {
+                    background = node.InitComponent<UnityEngine.UI.RawImage>();
+                }
+                else
+                {
+                    background = node.InitComponent<UnityEngine.UI.Image>();
+                }
+
+                if (background)
+                {
+                    PSDImporterUtility.SetPictureOrLoadColor(image, background);
+                    SetRectTransform(image.rect, background.GetComponent<RectTransform>());
+                    background.name = layer.displayName;
+                }
+            }
+            else
+            {
+                ctrl.DrawImage(image, node);
             }
         }
 
